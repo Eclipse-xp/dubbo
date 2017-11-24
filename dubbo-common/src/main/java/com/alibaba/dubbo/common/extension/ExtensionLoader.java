@@ -607,9 +607,11 @@ public class ExtensionLoader<T> {
                         try {
                             String line = null;
                             while ((line = reader.readLine()) != null) {
+                                //NOTE BY XP,过滤掉注释
                                 final int ci = line.indexOf('#');
                                 if (ci >= 0) line = line.substring(0, ci);
                                 line = line.trim();
+
                                 if (line.length() > 0) {
                                     try {
                                         String name = null;
