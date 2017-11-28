@@ -589,6 +589,7 @@ public class ExtensionLoader<T> {
         return extensionClasses;
     }
 
+    //NOTE BY XP,将扩展点配置文件中的对应类加载到jvm中（Class.forName）
     private void loadFile(Map<String, Class<?>> extensionClasses, String dir) {
         String fileName = dir + type.getName();
         try {
