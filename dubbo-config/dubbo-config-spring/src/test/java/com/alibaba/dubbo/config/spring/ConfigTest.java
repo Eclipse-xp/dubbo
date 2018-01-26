@@ -92,11 +92,15 @@ public class ConfigTest {
     }
 
     @Test
+    //从provider服务注册到consumer服务注册，然后调用服务
     public void testServiceClass() {
+        //加载provider配置文件
         ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(ConfigTest.class.getPackage().getName().replace('.', '/') + "/service-class.xml");
         ctx.start();
         try {
+            //注册consumer
             DemoService demoService = refer("dubbo://127.0.0.1:20887");
+            //调用服务
             String hello = demoService.sayName("hello");
             assertEquals("welcome:hello", hello);
         } finally {
