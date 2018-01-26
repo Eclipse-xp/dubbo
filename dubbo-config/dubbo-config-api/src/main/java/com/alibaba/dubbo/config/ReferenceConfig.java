@@ -56,6 +56,7 @@ import java.util.Properties;
  * @author william.liangf
  * @export
  */
+//consumer 配置类
 public class ReferenceConfig<T> extends AbstractReferenceConfig {
 
     private static final long serialVersionUID = -5864351140409987595L;
@@ -151,6 +152,7 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
         return urls;
     }
 
+    //获取服务提供者 provider service
     public synchronized T get() {
         if (destroyed) {
             throw new IllegalStateException("Already destroyed!");
