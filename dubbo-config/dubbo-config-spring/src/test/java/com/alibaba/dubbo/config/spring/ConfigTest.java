@@ -77,6 +77,7 @@ public class ConfigTest {
     }
 
     @Test
+    //扩展点加载测试
     public void testSpringExtensionInject() {
         ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(ConfigTest.class.getPackage().getName().replace('.', '/') + "/spring-extension-inject.xml");
         ctx.start();

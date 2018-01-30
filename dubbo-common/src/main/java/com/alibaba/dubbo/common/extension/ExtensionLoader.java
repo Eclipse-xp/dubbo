@@ -57,6 +57,7 @@ import java.util.regex.Pattern;
  * @see com.alibaba.dubbo.common.extension.Adaptive
  * @see com.alibaba.dubbo.common.extension.Activate
  */
+//dubbo 自己实现的扩展点loader，SPI的使用最常见的例子是jdbc
 public class ExtensionLoader<T> {
 
     private static final Logger logger = LoggerFactory.getLogger(ExtensionLoader.class);
@@ -568,6 +569,7 @@ public class ExtensionLoader<T> {
     }
 
     // 此方法已经getExtensionClasses方法同步过。
+    // 第一次加载扩展点时将调用到此方法
     private Map<String, Class<?>> loadExtensionClasses() {
         final SPI defaultAnnotation = type.getAnnotation(SPI.class);
         if (defaultAnnotation != null) {
@@ -583,6 +585,7 @@ public class ExtensionLoader<T> {
         }
 
         Map<String, Class<?>> extensionClasses = new HashMap<String, Class<?>>();
+        //加载以下三个路径下的扩展点文件
         loadFile(extensionClasses, DUBBO_INTERNAL_DIRECTORY);
         loadFile(extensionClasses, DUBBO_DIRECTORY);
         loadFile(extensionClasses, SERVICES_DIRECTORY);
