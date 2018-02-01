@@ -411,7 +411,7 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
         if (logger.isInfoEnabled()) {
             logger.info("Refer dubbo service " + interfaceClass.getName() + " from url " + invoker.getUrl());
         }
-        // 创建服务代理
+        // 创建服务代理 dubbo的零api入侵，是通过创建服务代理实现的，consumer调用服务时，实际调用的是代理对象，代理隐藏了通信实现细节
         return (T) proxyFactory.getProxy(invoker);
     }
 
