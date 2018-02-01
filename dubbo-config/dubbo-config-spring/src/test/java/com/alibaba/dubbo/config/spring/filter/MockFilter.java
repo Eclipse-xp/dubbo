@@ -64,4 +64,8 @@ public class MockFilter implements Filter {
         return invoker.invoke(invocation);
     }
 
+    public void sayHello(){
+        System.out.println("hello there!");
+    }
+
 }

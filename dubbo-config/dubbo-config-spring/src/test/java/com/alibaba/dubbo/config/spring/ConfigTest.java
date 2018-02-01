@@ -49,6 +49,7 @@ import com.alibaba.dubbo.rpc.service.GenericService;
 import junit.framework.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.BeanCreationException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.Collection;
@@ -78,6 +79,12 @@ public class ConfigTest {
 
     @Test
     //扩展点加载测试
+    public void testExtensionInject(){
+        MockFilter filter = (MockFilter) ExtensionLoader.getExtensionLoader(Filter.class).getExtension("mymock");
+        filter.sayHello();
+    }
+    @Test
+    //扩展点加载测试 启动spring
     public void testSpringExtensionInject() {
         ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(ConfigTest.class.getPackage().getName().replace('.', '/') + "/spring-extension-inject.xml");
         ctx.start();
@@ -86,6 +93,7 @@ public class ConfigTest {
             assertNotNull(filter.getMockDao());
             assertNotNull(filter.getProtocol());
             assertNotNull(filter.getLoadBalance());
+
         } finally {
             ctx.stop();
             ctx.close();

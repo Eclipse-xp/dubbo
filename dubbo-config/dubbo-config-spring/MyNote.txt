@@ -1,0 +1,13 @@
+1.Spring自定义标签
+    ①META-INF下新建与命名空间同名的xsd文件，如dubbo.xsd,其中定义了命名空间下的标签及属性信息
+        例子：<dubbo:registry address="${depositroy-registry-address}" protocol="zookeeper"/>
+            命名空间：dubbo
+            标签：registry
+            属性：adress、protocol
+
+    ②META-INF下新建spring.schemas文件，声明命名空间文件位置
+        例子：http\://code.alibabatech.com/schema/dubbo/dubbo.xsd=META-INF/dubbo.xsd
+
+    ③META-INF下新建spring.handlers文件，指定标签解析器，用于向Spring注册解析器，解析程序将解析自定义标签内容，并返回BeanDefination，
+    交由Spring管理。解析程序需要自己编写（细节待补充）
+        例子：http\://code.alibabatech.com/schema/dubbo=com.alibaba.dubbo.config.spring.schema.DubboNamespaceHandler
