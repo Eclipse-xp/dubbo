@@ -11,3 +11,12 @@
     ③META-INF下新建spring.handlers文件，指定标签解析器，用于向Spring注册解析器，解析程序将解析自定义标签内容，并返回BeanDefination，
     交由Spring管理。解析程序需要自己编写（细节待补充）
         例子：http\://code.alibabatech.com/schema/dubbo=com.alibaba.dubbo.config.spring.schema.DubboNamespaceHandler
+
+2.dubbo是如何实现的零api入侵？动态代理如何生成?何时生成？
+    通过动态代理隐藏了通信细节
+    通过实现org.springframework.beans.factory.config.BeanPostProcessor接口创建动态代理，
+        spring会在初始化bean之前回调postProcessBeforeInitialization方法，在此回调方法中，加入对自定义标签、注解的处理逻辑，生成代理
+        这里解析@Reference注解，注册consumer，生成代理，consumer的代理是在bean初始化之前生成
+
+        sping 初始化bean之后会回调postProcessAfterInitialization方法
+        这里解析@service标签，生成代理，provider的代理是在bean初始化之后生成

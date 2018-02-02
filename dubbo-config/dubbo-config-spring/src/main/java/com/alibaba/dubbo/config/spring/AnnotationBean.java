@@ -124,11 +124,13 @@ public class AnnotationBean extends AbstractConfig implements DisposableBean, Be
         }
     }
 
+    //sping 初始化bean之后会回调此方法
     public Object postProcessAfterInitialization(Object bean, String beanName)
             throws BeansException {
         if (!isMatchPackage(bean)) {
             return bean;
         }
+        //解析@service标签，生成代理，provider的代理是在bean初始化之后生成
         Service service = bean.getClass().getAnnotation(Service.class);
         if (service != null) {
             ServiceBean<Object> serviceConfig = new ServiceBean<Object>(service);
@@ -192,6 +194,8 @@ public class AnnotationBean extends AbstractConfig implements DisposableBean, Be
         return bean;
     }
 
+    //实现org.springframework.beans.factory.config.BeanPostProcessor接口，spring会在初始化bean之前回调该方法，
+    //在此回调方法中，加入对自定义标签、注解的处理逻辑，生成代理
     public Object postProcessBeforeInitialization(Object bean, String beanName)
             throws BeansException {
         if (!isMatchPackage(bean)) {
@@ -205,6 +209,7 @@ public class AnnotationBean extends AbstractConfig implements DisposableBean, Be
                     && Modifier.isPublic(method.getModifiers())
                     && !Modifier.isStatic(method.getModifiers())) {
                 try {
+                    //解析@Reference注解，注册consumer，生成代理
                     Reference reference = method.getAnnotation(Reference.class);
                     if (reference != null) {
                         Object value = refer(reference, method.getParameterTypes()[0]);
