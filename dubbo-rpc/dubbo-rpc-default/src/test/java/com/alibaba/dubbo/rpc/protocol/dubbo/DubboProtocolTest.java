@@ -44,15 +44,19 @@ import static junit.framework.Assert.assertEquals;
  */
 
 public class DubboProtocolTest {
+    //加载dubboProtocol扩展点
     private Protocol protocol = ExtensionLoader.getExtensionLoader(Protocol.class).getAdaptiveExtension();
     private ProxyFactory proxy = ExtensionLoader.getExtensionLoader(ProxyFactory.class).getAdaptiveExtension();
 
     @Test
     public void testDemoProtocol() throws Exception {
         DemoService service = new DemoServiceImpl();
+        //暴露服务
         protocol.export(proxy.getInvoker(service, DemoService.class, URL.valueOf("dubbo://127.0.0.1:9020/" + DemoService.class.getName() + "?codec=exchange")));
+        //引用服务
         service = proxy.getProxy(protocol.refer(DemoService.class, URL.valueOf("dubbo://127.0.0.1:9020/" + DemoService.class.getName() + "?codec=exchange")));
         assertEquals(service.getSize(new String[]{"", "", ""}), 3);
+        service.sayHello("xiexiangpeng");
     }
 
     @Test

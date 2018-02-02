@@ -24,6 +24,7 @@ import com.alibaba.dubbo.common.extension.SPI;
  *
  * @author william.liangf
  */
+//dubbo服务是通过协议来暴露和引用的,如下
 @SPI("dubbo")
 public interface Protocol {
 

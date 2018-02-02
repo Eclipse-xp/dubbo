@@ -346,6 +346,7 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
 
         if (isJvmRefer) {
             URL url = new URL(Constants.LOCAL_PROTOCOL, NetUtils.LOCALHOST, 0, interfaceClass.getName()).addParameters(map);
+            //refer引用服务
             invoker = refprotocol.refer(interfaceClass, url);
             if (logger.isInfoEnabled()) {
                 logger.info("Using injvm service " + interfaceClass.getName());
