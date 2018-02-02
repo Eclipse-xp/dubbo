@@ -152,12 +152,14 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
         return urls;
     }
 
-    //获取服务提供者 provider service
+    //获取dubbo bean
     public synchronized T get() {
         if (destroyed) {
             throw new IllegalStateException("Already destroyed!");
         }
         if (ref == null) {
+            //为空则先初始化bean，初始化过程包括组装config，创建对应的动态代理
+            //组装包括所有dubbo需要的rpc参数，包括接口、协议、地址等
             init();
         }
         return ref;
@@ -208,6 +210,7 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
         String resolve = System.getProperty(interfaceName);
         String resolveFile = null;
         if (resolve == null || resolve.length() == 0) {
+            //可以通过配置全局变量，指定服务的配置文件，配置服务
             resolveFile = System.getProperty("dubbo.resolve.file");
             if (resolveFile == null || resolveFile.length() == 0) {
                 File userResolveFile = new File(new File(System.getProperty("user.home")), "dubbo-resolve.properties");
@@ -323,6 +326,8 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
     }
 
     @SuppressWarnings({"unchecked", "rawtypes", "deprecation"})
+    //先通过Protocal获取到Invoker,Invoker是一个关于执行的封装，通过invoker发起调用，
+    //然后创建invoker的动态代理
     private T createProxy(Map<String, String> map) {
         URL tmpUrl = new URL("temp", "localhost", 0, map);
         final boolean isJvmRefer;

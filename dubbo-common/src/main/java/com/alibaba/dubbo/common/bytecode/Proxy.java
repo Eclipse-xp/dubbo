@@ -76,7 +76,7 @@ public abstract class Proxy {
      * @return Proxy instance.
      */
     public static Proxy getProxy(ClassLoader cl, Class<?>... ics) {
-        if (ics.length > 65535)
+        if (ics.length > 65535)//最多支持实现65535个接口，关键有可能实现这么多接口么：（
             throw new IllegalArgumentException("interface limit exceeded");
 
         StringBuilder sb = new StringBuilder();
@@ -196,6 +196,7 @@ public abstract class Proxy {
             ccm.addDefaultConstructor();
             ccm.setSuperClass(Proxy.class);
             ccm.addMethod("public Object newInstance(" + InvocationHandler.class.getName() + " h){ return new " + pcn + "($1); }");
+            //用Javassist通过直接编写字节码的方式，创建动态代理类，实现了proxy中的抽象方法，代码里看不到具体实现
             Class<?> pc = ccm.toClass();
             proxy = (Proxy) pc.newInstance();
         } catch (RuntimeException e) {

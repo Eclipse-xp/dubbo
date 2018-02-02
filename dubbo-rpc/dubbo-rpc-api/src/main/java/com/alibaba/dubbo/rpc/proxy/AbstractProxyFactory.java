@@ -33,6 +33,7 @@ public abstract class AbstractProxyFactory implements ProxyFactory {
         Class<?>[] interfaces = null;
         String config = invoker.getUrl().getParameter("interfaces");
         if (config != null && config.length() > 0) {
+            //获取所有实现的接口，正则\s*[,]+\s*匹配一个或多个","
             String[] types = Constants.COMMA_SPLIT_PATTERN.split(config);
             if (types != null && types.length > 0) {
                 interfaces = new Class<?>[types.length + 2];

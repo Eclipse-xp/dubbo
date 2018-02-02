@@ -1,0 +1,5 @@
+Dubbo之所以封装一层代理是因为要支持filter
+filter具体作用？可以添加白名单。等等
+    具体的通信过程貌似依赖dubbo-----待确定
+
+Invoker封装了执行过程，使用时只需要调用Invoker，而在Invoker内部发送请求，发送请求有ExchangeClient执行，ExchangeClient只对Invoker可见，牛逼的设计

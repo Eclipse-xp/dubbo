@@ -26,6 +26,7 @@ import java.lang.reflect.Method;
  *
  * @author william.liangf
  */
+//进一步封装对invoker的调用，负责将参数封装成Invocation，然后调用invoker
 public class InvokerInvocationHandler implements InvocationHandler {
 
     private final Invoker<?> invoker;

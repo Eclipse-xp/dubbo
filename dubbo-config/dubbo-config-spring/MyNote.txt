@@ -13,10 +13,18 @@
         例子：http\://code.alibabatech.com/schema/dubbo=com.alibaba.dubbo.config.spring.schema.DubboNamespaceHandler
 
 2.dubbo是如何实现的零api入侵？动态代理如何生成?何时生成？
-    通过动态代理隐藏了通信细节
+    通过动态代理隐藏了通信细节，实际上调用是通过Invoker执行的，动态代理是Invoker的动态代理。不对，是InvokerInvocationHandler的代理
     通过实现org.springframework.beans.factory.config.BeanPostProcessor接口创建动态代理，
         spring会在初始化bean之前回调postProcessBeforeInitialization方法，在此回调方法中，加入对自定义标签、注解的处理逻辑，生成代理
         这里解析@Reference注解，注册consumer，生成代理，consumer的代理是在bean初始化之前生成
 
         sping 初始化bean之后会回调postProcessAfterInitialization方法
         这里解析@service标签，生成代理，provider的代理是在bean初始化之后生成
+
+3.Dubbo中的领域模型（来自dubbo文档）
+    在 Dubbo 的核⼼领域模型中：
+        Protocol 是服务域，它是 Invoker 暴露和引⽤的主功能⼊⼝，它负责 Invoker 的⽣命周期管理。
+        Invoker 是实体域，它是 Dubbo 的核⼼模型，其它模型都向它靠扰，或转换成它，它代表⼀个可
+        执⾏体，可向它发起 invoke 调⽤，它有可能是⼀个本地的实现，也可能是⼀个远程的实现，也可
+        能⼀个集群实现。
+        Invocation 是会话域，它持有调⽤过程中的变量，⽐如⽅法名，参数等。
