@@ -54,6 +54,7 @@ import java.util.UUID;
  * @author william.liangf
  * @export
  */
+//@Service <dubbo:service /> 用于provider暴露服务
 public class ServiceConfig<T> extends AbstractServiceConfig {
 
     private static final long serialVersionUID = 3033787999037024738L;
