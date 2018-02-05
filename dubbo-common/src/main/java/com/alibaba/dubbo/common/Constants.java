@@ -579,6 +579,10 @@ public class Constants {
 
     public static final String GENERIC_SERIALIZATION_BEAN = "bean";
 
+    public static final String LINE_NOTE_4XP = "----------*****XP-INFO*****----------";
+
+    public static final String LINE_SEPERATOR_4XP = System.getProperty("line.separator") + LINE_NOTE_4XP;
+
     /*
      * private Constants(){ }
      */

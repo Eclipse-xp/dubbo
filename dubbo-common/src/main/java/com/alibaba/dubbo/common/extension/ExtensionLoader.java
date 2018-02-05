@@ -939,7 +939,7 @@ public class ExtensionLoader<T> {
         }
         codeBuidler.append("\n}");
         if (logger.isDebugEnabled()) {
-            logger.debug(codeBuidler.toString());
+            logger.debug(Constants.LINE_SEPERATOR_4XP + codeBuidler.toString() + Constants.LINE_SEPERATOR_4XP);
         }
         return codeBuidler.toString();
     }
