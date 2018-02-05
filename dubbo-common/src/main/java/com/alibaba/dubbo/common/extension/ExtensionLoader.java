@@ -441,6 +441,7 @@ public class ExtensionLoader<T> {
     }
 
     @SuppressWarnings("unchecked")
+    //如果扩展点没有没有加@Adaptive注解，则动态创建一个.只有包含@Adaptive方法的类才允许创建AdaptiveExtension，否则异常
     public T getAdaptiveExtension() {
         Object instance = cachedAdaptiveInstance.get();
         if (instance == null) {
