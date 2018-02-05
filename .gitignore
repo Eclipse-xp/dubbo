@@ -28,3 +28,7 @@ target/
 .DS_Store
 Thumbs.db
 
+# Other tools ignore
+# underStand ignore
+*.udb
+

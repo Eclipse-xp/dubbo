@@ -76,6 +76,7 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
     // 方法配置
     private List<MethodConfig> methods;
     private ProviderConfig provider;
+    //加volatile 用于保证多线程可见性，加transient为了避免被持久化
     private transient volatile boolean exported;
 
     private transient volatile boolean unexported;
@@ -187,9 +188,11 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
                 delay = provider.getDelay();
             }
         }
+        //是否暴露服务
         if (export != null && !export.booleanValue()) {
             return;
         }
+        //处理延迟暴露
         if (delay != null && delay > 0) {
             Thread thread = new Thread(new Runnable() {
                 public void run() {
@@ -297,8 +300,11 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
                 throw new IllegalStateException("The stub implemention class " + stubClass.getName() + " not implement interface " + interfaceName);
             }
         }
+        //检查dubbo:application 应用 是否完成配置
         checkApplication();
+        //检查dubbo:registry 注册地址 是否完成配置
         checkRegistry();
+        //检查dubbo:protocol 通信协议 是否完成配置
         checkProtocol();
         appendProperties(this);
         checkStubAndMock(interfaceClass);
@@ -342,7 +348,9 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     private void doExportUrls() {
+        //获取注册中心信息
         List<URL> registryURLs = loadRegistries(true);
+        //支持多协议，如果配置了多协议则分别针对每个协议暴露服务
         for (ProtocolConfig protocolConfig : protocols) {
             doExportUrlsFor1Protocol(protocolConfig, registryURLs);
         }
@@ -397,10 +405,12 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
         if (provider != null && (port == null || port == 0)) {
             port = provider.getPort();
         }
+        //端口没配置，用默认端口
         final int defaultPort = ExtensionLoader.getExtensionLoader(Protocol.class).getExtension(name).getDefaultPort();
         if (port == null || port == 0) {
             port = defaultPort;
         }
+        //默认端口没配置，随机选择端口
         if (port == null || port <= 0) {
             port = getRandomPort(name);
             if (port == null || port < 0) {
@@ -522,6 +532,7 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
                     .getExtension(url.getProtocol()).getConfigurator(url).configure(url);
         }
 
+        //scope 属性用于配置服务的暴露范围
         String scope = url.getParameter(Constants.SCOPE_KEY);
         //配置为none不暴露
         if (!Constants.SCOPE_NONE.toString().equalsIgnoreCase(scope)) {

@@ -101,11 +101,16 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
     }
 
     public void onApplicationEvent(ApplicationEvent event) {
+        //捕捉Spring上下文初始化、及刷新事件
         if (ContextRefreshedEvent.class.getName().equals(event.getClass().getName())) {
+            // 延迟暴露 && 未暴露过？ && 未注销过？
+            //isExported()和isUnexported()用于判断服务是否已经被暴露，或者被注销。保证一个服务只能被暴露或者注销一次
+            //config模块的多个环节都进行了此判断，严格保证了服务的幂等性
             if (isDelay() && !isExported() && !isUnexported()) {
                 if (logger.isInfoEnabled()) {
                     logger.info("The service ready on spring started. service: " + getInterface());
                 }
+                //暴露服务新开线程，对于配置了延迟的服务，将sleep对应时间之后再开始暴露
                 export();
             }
         }
@@ -121,6 +126,7 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
     }
 
     @SuppressWarnings({"unchecked", "deprecation"})
+    //此方法先于onApplicationEvent()被回调
     public void afterPropertiesSet() throws Exception {
         if (getProvider() == null) {
             Map<String, ProviderConfig> providerConfigMap = applicationContext == null ? null : BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, ProviderConfig.class, false, false);
@@ -246,6 +252,7 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
                 setPath(beanName);
             }
         }
+        //暴露没有配置延迟暴露的服务
         if (!isDelay()) {
             export();
         }
