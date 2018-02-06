@@ -68,6 +68,7 @@ public class Exchangers {
             throw new IllegalArgumentException("handler == null");
         }
         url = url.addParameterIfAbsent(Constants.CODEC_KEY, "exchange");
+        //header=com.alibaba.dubbo.remoting.exchange.support.header.HeaderExchanger
         return getExchanger(url).bind(url, handler);
     }
 
@@ -115,6 +116,7 @@ public class Exchangers {
         return getExchanger(type);
     }
 
+    //header=com.alibaba.dubbo.remoting.exchange.support.header.HeaderExchanger
     public static Exchanger getExchanger(String type) {
         return ExtensionLoader.getExtensionLoader(Exchanger.class).getExtension(type);
     }

@@ -4,3 +4,75 @@ filter具体作用？可以添加白名单。等等
 Protocol负责暴露服务和引用服务.引用服务时,会根据参数创建连接客户端,即ExchangeClient,用于向服务提供方发送请求
 Invoker封装了执行过程，使用时只需要调用Invoker，而在Invoker内部发送请求，发送请求有ExchangeClient执行，ExchangeClient只对Invoker可见，牛逼的设计
 
+exchange 信息交换层：封装请求响应模式，同步转异步，以 Request , Response 为中⼼，扩
+展接⼝为 Exchanger , ExchangeChannel , ExchangeClient , ExchangeServer ----DUBBO DOC
+transport ⽹络传输层：抽象 mina 和 netty 为统⼀接⼝，以 Message 为中⼼，扩展接⼝为
+Channel , Transporter , Client , Server , Codec ----DUBBO DOC
+
+-----------------------以下是ServiceConfig中动态生成的proxy和proxyFactory------------------------
+package com.alibaba.dubbo.rpc;
+
+import com.alibaba.dubbo.common.extension.ExtensionLoader;
+
+public class Protocol$Adpative implements com.alibaba.dubbo.rpc.Protocol {
+    public void destroy() {
+        throw new UnsupportedOperationException("method public abstract void com.alibaba.dubbo.rpc.Protocol.destroy() of interface com.alibaba.dubbo.rpc.Protocol is not adaptive method!");
+    }
+
+    public int getDefaultPort() {
+        throw new UnsupportedOperationException("method public abstract int com.alibaba.dubbo.rpc.Protocol.getDefaultPort() of interface com.alibaba.dubbo.rpc.Protocol is not adaptive method!");
+    }
+
+    public com.alibaba.dubbo.rpc.Invoker refer(java.lang.Class arg0, com.alibaba.dubbo.common.URL arg1) throws com.alibaba.dubbo.rpc.RpcException {
+        if (arg1 == null) throw new IllegalArgumentException("url == null");
+        com.alibaba.dubbo.common.URL url = arg1;
+        //如果没有配置协议，默认是dubbo，即扩展为DubboProtocol
+        String extName = (url.getProtocol() == null ? "dubbo" : url.getProtocol());
+        if (extName == null)
+            throw new IllegalStateException("Fail to get extension(com.alibaba.dubbo.rpc.Protocol) name from url(" + url.toString() + ") use keys([protocol])");
+        com.alibaba.dubbo.rpc.Protocol extension = (com.alibaba.dubbo.rpc.Protocol) ExtensionLoader.getExtensionLoader(com.alibaba.dubbo.rpc.Protocol.class).getExtension(extName);
+        return extension.refer(arg0, arg1);
+    }
+
+    public com.alibaba.dubbo.rpc.Exporter export(com.alibaba.dubbo.rpc.Invoker arg0) throws com.alibaba.dubbo.rpc.RpcException {
+        if (arg0 == null) throw new IllegalArgumentException("com.alibaba.dubbo.rpc.Invoker argument == null");
+        if (arg0.getUrl() == null)
+            throw new IllegalArgumentException("com.alibaba.dubbo.rpc.Invoker argument getUrl() == null");
+        com.alibaba.dubbo.common.URL url = arg0.getUrl();
+        String extName = (url.getProtocol() == null ? "dubbo" : url.getProtocol());
+        if (extName == null)
+            throw new IllegalStateException("Fail to get extension(com.alibaba.dubbo.rpc.Protocol) name from url(" + url.toString() + ") use keys([protocol])");
+        com.alibaba.dubbo.rpc.Protocol extension = (com.alibaba.dubbo.rpc.Protocol) ExtensionLoader.getExtensionLoader(com.alibaba.dubbo.rpc.Protocol.class).getExtension(extName);
+        return extension.export(arg0);
+    }
+}
+
+
+package com.alibaba.dubbo.rpc;
+
+import com.alibaba.dubbo.common.extension.ExtensionLoader;
+
+public class ProxyFactory$Adpative implements com.alibaba.dubbo.rpc.ProxyFactory {
+    public com.alibaba.dubbo.rpc.Invoker getInvoker(java.lang.Object arg0, java.lang.Class arg1, com.alibaba.dubbo.common.URL arg2) throws com.alibaba.dubbo.rpc.RpcException {
+        if (arg2 == null) throw new IllegalArgumentException("url == null");
+        com.alibaba.dubbo.common.URL url = arg2;
+        String extName = url.getParameter("proxy", "javassist");
+        if (extName == null)
+            throw new IllegalStateException("Fail to get extension(com.alibaba.dubbo.rpc.ProxyFactory) name from url(" + url.toString() + ") use keys([proxy])");
+        com.alibaba.dubbo.rpc.ProxyFactory extension = (com.alibaba.dubbo.rpc.ProxyFactory) ExtensionLoader.getExtensionLoader(com.alibaba.dubbo.rpc.ProxyFactory.class).getExtension(extName);
+        return extension.getInvoker(arg0, arg1, arg2);
+    }
+
+    public java.lang.Object getProxy(com.alibaba.dubbo.rpc.Invoker arg0) throws com.alibaba.dubbo.rpc.RpcException {
+        if (arg0 == null) throw new IllegalArgumentException("com.alibaba.dubbo.rpc.Invoker argument == null");
+        if (arg0.getUrl() == null)
+            throw new IllegalArgumentException("com.alibaba.dubbo.rpc.Invoker argument getUrl() == null");
+        com.alibaba.dubbo.common.URL url = arg0.getUrl();
+        String extName = url.getParameter("proxy", "javassist");
+        if (extName == null)
+            throw new IllegalStateException("Fail to get extension(com.alibaba.dubbo.rpc.ProxyFactory) name from url(" + url.toString() + ") use keys([proxy])");
+        com.alibaba.dubbo.rpc.ProxyFactory extension = (com.alibaba.dubbo.rpc.ProxyFactory) ExtensionLoader.getExtensionLoader(com.alibaba.dubbo.rpc.ProxyFactory.class).getExtension(extName);
+        return extension.getProxy(arg0);
+    }
+}
+

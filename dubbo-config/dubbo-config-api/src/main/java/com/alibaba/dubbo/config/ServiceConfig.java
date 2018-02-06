@@ -59,7 +59,8 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
 
     private static final long serialVersionUID = 3033787999037024738L;
 
-    //此处的protocol是用动态生成的类，源码中看不到具体类，只能看到生成规则，如果想看借助HSDB？jvm?
+    //此处的protocol是用动态生成的类，源码中看不到具体类，只能看到生成规则，如果想看借助HSDB？修改日志级别可以打印出对应类，但无法debug
+    //生成的类内容 本人 保存到了dubbo-rpc-api MyNote.txt中
     private static final Protocol protocol = ExtensionLoader.getExtensionLoader(Protocol.class).getAdaptiveExtension();
 
     private static final ProxyFactory proxyFactory = ExtensionLoader.getExtensionLoader(ProxyFactory.class).getAdaptiveExtension();

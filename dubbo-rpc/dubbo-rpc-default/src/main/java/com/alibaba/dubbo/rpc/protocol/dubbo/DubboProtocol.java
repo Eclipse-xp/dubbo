@@ -72,6 +72,7 @@ public class DubboProtocol extends AbstractProtocol {
     //consumer side export a stub service for dispatching event
     //servicekey-stubmethods
     private final ConcurrentMap<String, String> stubServiceMethodsMap = new ConcurrentHashMap<String, String>();
+    //requestHandler会封装到listener中
     private ExchangeHandler requestHandler = new ExchangeHandlerAdapter() {
 
         public Object reply(ExchangeChannel channel, Object message) throws RemotingException {
@@ -99,6 +100,7 @@ public class DubboProtocol extends AbstractProtocol {
                     }
                 }
                 RpcContext.getContext().setRemoteAddress(channel.getRemoteAddress());
+                //调用AbstractInvoker，然后再交给具体的协议对应的Invoker处理
                 return invoker.invoke(inv);
             }
             throw new RemotingException(channel, "Unsupported request: " + message == null ? null : (message.getClass().getName() + ": " + message) + ", channel: consumer: " + channel.getRemoteAddress() + " --> provider: " + channel.getLocalAddress());
@@ -219,6 +221,7 @@ public class DubboProtocol extends AbstractProtocol {
         return DEFAULT_PORT;
     }
 
+    //具体协议暴露服务，会用netty等框架创建服务和注册中心之间的连接
     public <T> Exporter<T> export(Invoker<T> invoker) throws RpcException {
         URL url = invoker.getUrl();
 
@@ -242,6 +245,7 @@ public class DubboProtocol extends AbstractProtocol {
             }
         }
 
+        //创建连接
         openServer(url);
 
         return exporter;
@@ -255,6 +259,7 @@ public class DubboProtocol extends AbstractProtocol {
         if (isServer) {
             ExchangeServer server = serverMap.get(key);
             if (server == null) {
+                //createServer开启服务
                 serverMap.put(key, createServer(url));
             } else {
                 //server支持reset,配合override功能使用
@@ -276,6 +281,7 @@ public class DubboProtocol extends AbstractProtocol {
         url = url.addParameter(Constants.CODEC_KEY, Version.isCompatibleVersion() ? COMPATIBLE_CODEC_NAME : DubboCodec.NAME);
         ExchangeServer server;
         try {
+            //绑定url,并传入handler
             server = Exchangers.bind(url, requestHandler);
         } catch (RemotingException e) {
             throw new RpcException("Fail to start server(url: " + url + ") " + e.getMessage(), e);
