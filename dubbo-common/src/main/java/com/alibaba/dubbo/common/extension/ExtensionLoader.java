@@ -507,6 +507,9 @@ public class ExtensionLoader<T> {
             Set<Class<?>> wrapperClasses = cachedWrapperClasses;
             if (wrapperClasses != null && wrapperClasses.size() > 0) {
                 for (Class<?> wrapperClass : wrapperClasses) {
+                    //这里将Listener作为protocol传入入了filter中,最后返回filter，
+                    // export时顺序为Protocol$Adpative-->ProtocolFilterWrapper-->ProtocolListenerWrapper-->真正protocol(injvm\dubbo...)
+                    // 然后在逐层返回
                     instance = injectExtension((T) wrapperClass.getConstructor(type).newInstance(instance));
                 }
             }
