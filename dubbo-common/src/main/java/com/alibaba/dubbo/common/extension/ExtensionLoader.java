@@ -608,13 +608,13 @@ public class ExtensionLoader<T> {
                 urls = ClassLoader.getSystemResources(fileName);
             }
             if (urls != null) {
-                while (urls.hasMoreElements()) {
+                while (urls.hasMoreElements()) {//遍历各个模块下的同名文件
                     java.net.URL url = urls.nextElement();
                     try {
                         BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), "utf-8"));
                         try {
                             String line = null;
-                            while ((line = reader.readLine()) != null) {
+                            while ((line = reader.readLine()) != null) {//遍历单个文件下的每条记录
                                 //NOTE BY XP,过滤掉注释
                                 final int ci = line.indexOf('#');
                                 if (ci >= 0) line = line.substring(0, ci);
@@ -645,7 +645,7 @@ public class ExtensionLoader<T> {
                                                 }
                                             } else {
                                                 try {
-                                                    clazz.getConstructor(type);
+                                                    clazz.getConstructor(type);//这里作用是，只有有构造方法的扩展点才会被作为wrapper,缓存到cachedWrapperClasses中
                                                     Set<Class<?>> wrappers = cachedWrapperClasses;
                                                     if (wrappers == null) {
                                                         cachedWrapperClasses = new ConcurrentHashSet<Class<?>>();
