@@ -70,7 +70,7 @@ public class DefaultFuture implements ResponseFuture {
     public DefaultFuture(Channel channel, Request request, int timeout) {
         this.channel = channel;
         this.request = request;
-        this.id = request.getId();
+        this.id = request.getId();//用于标识多线程情况下数据的对应
         this.timeout = timeout > 0 ? timeout : channel.getUrl().getPositiveParameter(Constants.TIMEOUT_KEY, Constants.DEFAULT_TIMEOUT);
         // put into waiting map.
         FUTURES.put(id, this);
@@ -119,10 +119,10 @@ public class DefaultFuture implements ResponseFuture {
         }
         if (!isDone()) {
             long start = System.currentTimeMillis();
-            lock.lock();
+            lock.lock();//加同步锁
             try {
                 while (!isDone()) {
-                    done.await(timeout, TimeUnit.MILLISECONDS);
+                    done.await(timeout, TimeUnit.MILLISECONDS);//等待返回结果
                     if (isDone() || System.currentTimeMillis() - start > timeout) {
                         break;
                     }
@@ -253,7 +253,7 @@ public class DefaultFuture implements ResponseFuture {
         try {
             response = res;
             if (done != null) {
-                done.signal();
+                done.signal();//获取到返回结果后唤醒线程
             }
         } finally {
             lock.unlock();
